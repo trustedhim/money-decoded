@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Decoded</title>
+    <style>
+        :root {
+            --bg: #0f0f0f;
+            --card: #1a1a1a;
+            --accent: #00c896;
+            --text: #e0e0e0;
+            --muted: #999;
+            --danger: #ff4d6a;
+            --border: #2a2a2a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        nav {
+            width: 100%;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: var(--card);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+        }
+
+        .btn {
+            padding: 0.6rem 1.4rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            padding: 2rem;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 span {
+            color: var(--accent);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        /* Module Cards */
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.8rem;
+            transition: border-color 0.2s, transform 0.2s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .card.locked {
+            opacity: 0.6;
+            cursor: not-allowed;
+            position: relative;
+        }
+
+        .card.locked:hover {
+            border-color: var(--border);
+            transform: none;
+        }
+
+        .card.locked::after {
+            content: '🔒 Premium';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--danger);
+            color: #fff;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Module Detail View */
+        .module-view {
+            display: none;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 2rem auto;
+        }
+
+        .module-view.active {
+            display: block;
+        }
+
+        .module-view h2 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .module-view p {
+            color: var(--text);
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+        }
+
+        .module-view .highlight-box {
+            background: #0a0a0a;
+            border-left: 4px solid var(--accent);
+            padding: 1.2rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+
+        .module-view .highlight-box strong {
+            color: var(--accent);
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Quiz */
+        .quiz-container {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .quiz-container h4 {
+            margin-bottom: 1rem;
+        }
+
+        .quiz-option {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            background: #0a0a0a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text);
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent);
+        }
+
+        .quiz-option.correct {
+            border-color: var(--accent);
+            background: rgba(0, 200, 150, 0.1);
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--danger);
+            background: rgba(255, 77, 106, 0.1);
+        }
+
+        .feedback {
+            margin-top: 0.8rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Calculators */
+        .calc-container {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .calc-container h4 {
+            margin-bottom: 1rem;
+        }
+
+        .calc-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .calc-row label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            flex: 1;
+            min-width: 150px;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .calc-row input {
+            padding: 0.7rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #0a0a0a;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .calc-result {
+            margin-top: 1rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* License Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h3 {
+            margin-bottom: 0.8rem;
+        }
+
+        .modal p {
+            color: var(--muted);
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        .modal input {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: #0a0a0a;
+            color: var(--text);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent);
+            color: #000;
+            padding: 0.8rem 1.4rem;
+            border-radius: 8px;
+            font-weight: 700;
+            z-index: 200;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            width: 100%;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">💸 Money Decoded</div>
+        <div class="nav-links">
+            <a href="#" class="active" onclick="showHome()">Modules</a>
+            <a href="#" onclick="showCalculator()">Calculator</a>
+            <a href="#" class="btn btn-outline" onclick="openLicenseModal()">Unlock Premium</a>
+        </div>
+    </nav>
+
+    <div class="container" id="main-content">
+        <!-- Home / Module Grid -->
+        <div id="home-view">
+            <div class="hero">
+                <h1>Master <span>Money</span>.<br>Take Control of Your Future.</h1>
+                <p>Interactive modules that teach you everything school skipped about personal finance, investing, and wealth building.</p>
+                <button class="btn btn-primary" onclick="openLicenseModal()">🚀 Get Full Access — $29</button>
+            </div>
+
+            <div class="section-title">📚 Free Modules</div>
+            <div class="grid">
+                <div class="card" onclick="openModule('what-is-money')">
+                    <div class="card-icon">💵</div>
+                    <h3>What Is Money?</h3>
+                    <p>Understand the true nature of money — medium of exchange, store of value, unit of account — and how it evolved.</p>
+                </div>
+                <div class="card" onclick="openModule('inflation')">
+                    <div class="card-icon">📈</div>
+                    <h3>Inflation Explained</h3>
+                    <p>Why prices rise, how central banks fight inflation, and what it means for your savings.</p>
+                </div>
+                <div class="card" onclick="openModule('budgeting')">
+                    <div class="card-icon">📊</div>
+                    <h3>Budgeting 101</h3>
+                    <p>The 50/30/20 rule, tracking expenses, and building a system that actually works.</p>
+                </div>
+            </div>
+
+            <div class="section-title">🔒 Premium Modules</div>
+            <div class="grid">
+                <div class="card locked" onclick="handleLockedClick()">
+                    <div class="card-icon">📉</div>
+                    <h3>Stock Market Basics</h3>
+                    <p>How stocks work, reading charts, dividends, and building your first portfolio.</p>
+                </div>
+                <div class="card locked" onclick="handleLockedClick()">
+                    <div class="card-icon">🏠</div>
+                    <h3>Real Estate Investing</h3>
+                    <p>Rental properties, REITs, leverage, and how to evaluate a deal.</p>
+                </div>
+                <div class="card locked" onclick="handleLockedClick()">
+                    <div class="card-icon">🪙</div>
+                    <h3>Crypto & Digital Assets</h3>
+                    <p>Blockchain fundamentals, Bitcoin, Ethereum, and navigating the crypto landscape safely.</p>
+                </div>
+                <div class="card locked" onclick="handleLockedClick()">
+                    <div class="card-icon">💳</div>
+                    <h3>Credit & Debt Mastery</h3>
+                    <p>Credit scores, good vs bad debt, and strategies to become debt-free fast.</p>
+                </div>
+                <div class="card locked" onclick="handleLockedClick()">
+                    <div class="card-icon">🧠</div>
+                    <h3>Psychology of Money</h3>
+                    <p>Behavioral finance, emotional spending, and rewiring your money mindset.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Module Detail View -->
+        <div id="module-view" class="module-view">
+            <button class="back-btn" onclick="showHome()">← Back to Modules</button>
+            <div id="module-content"></div>
+        </div>
+
+        <!-- Calculator View -->
+        <div id="calculator-view" style="display:none;">
+            <div class="module-view active" style="display:block; max-width:700px; margin:2rem auto;">
+                <h2>🧮 Compound Interest Calculator</h2>
+                <p style="color:var(--muted);">See how your money grows over time with the power of compounding.</p>
+                <div class="calc-container">
+                    <div class="calc-row">
+                        <label>Initial Investment ($)
+                            <input type="number" id="principal" value="1000" min="0">
+                        </label>
+                        <label>Monthly Contribution ($)
+                            <input type="number" id="monthly" value="200" min="0">
+                        </label>
+                    </div>
+                    <div class="calc-row">
+                        <label>Annual Interest Rate (%)
+                            <input type="number" id="rate" value="8" min="0" max="100" step="0.1">
+                        </label>
+                        <label>Years
+                            <input type="number" id="years" value="20" min="1" max="60">
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateCompound()">Calculate</button>
+                    <div class="calc-result" id="compound-result"></div>
+                    <p style="font-size:0.8rem; color:var(--muted); margin-top:0.5rem;" id="compound-breakdown"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- License Modal -->
+    <div class="modal-overlay" id="license-modal">
+        <div class="modal">
+            <h3>🔑 Enter License Key</h3>
+            <p>Purchase a key from our Whop store to unlock all premium content.</p>
+            <input type="text" id="license-input" placeholder="XXXX-XXXX-XXXX-XXXX">
+            <button class="btn btn-primary" onclick="validateLicense()">Unlock</button>
+            <p style="margin-top:1rem; font-size:0.8rem;">
+                <a href="[whop.com](https://whop.com)" target="_blank" style="color:var(--accent);">Buy a license on Whop →</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <footer>
+        © 2026 Money Decoded — Powered by Whop
+    </footer>
+
+    <script>
+        // === State ===
+        let isPremium = false;
+        const DEMO_KEY = 'DEMO-1234-5678-ABCD';
+
+        // Module content database
+        const modules = {
+            'what-is-money': {
+                title: 'What Is Money?',
+                content: `
+                    <p>Money is one of the most powerful inventions in human history — yet most people never stop to ask what it actually <strong>is</strong>.</p>
+                    
+                    <div class="highlight-box">
+                        <strong>Definition:</strong> Money is anything that is widely accepted as payment for goods and services and repayment of debts.
+                    </div>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">The Three Functions of Money</h4>
+                    <p><strong>1. Medium of Exchange</strong> — Money eliminates the need for barter. Instead of trading chickens for shoes, you use a common currency that everyone accepts.</p>
+                    <p><strong>2. Store of Value</strong> — You can save money today and spend it later. It holds purchasing power over time (though inflation erodes this — more on that in the Inflation module).</p>
+                    <p><strong>3. Unit of Account</strong> — Money provides a standard way to measure and compare value. A coffee costs $4; a car costs $30,000. Without this, comparison is impossible.</p>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">A Brief History</h4>
+                    <p><strong>Barter (pre-6000 BC)</strong> — Direct exchange of goods. Inefficient, requires "double coincidence of wants."</p>
+                    <p><strong>Commodity Money (6000 BC – 700 BC)</strong> — Shells, salt, cattle, grain. Had intrinsic value but hard to transport.</p>
+                    <p><strong>Metal Coins (700 BC – 1800s)</strong> — Gold, silver, bronze. Durable, divisible, portable. The Lydians minted the first coins around 600 BC.</p>
+                    <p><strong>Paper Money (7th century China – present)</strong> — Initially backed by gold/silver (gold standard). Lighter and more convenient.</p>
+                    <p><strong>Fiat Money (1971 – present)</strong> — Currency backed only by government decree. The US left the gold standard in 1971. Today, all major currencies are fiat.</p>
+                    <p><strong>Digital Money (2009 – present)</strong> — Cryptocurrencies, CBDCs, digital payments. Money is increasingly becoming pure data.</p>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">Key Insight</h4>
+                    <p>Money is a <strong>social construct</strong> — it only has value because we collectively agree it does. A $100 bill is just paper; its power comes from the trust of millions of people and institutions.</p>
+                `,
+                quiz: {
+                    question: 'Which of the following is NOT one of the three core functions of money?',
+                    options: ['Medium of Exchange', 'Store of Value', 'Unit of Account', 'Generator of Wealth'],
+                    correct: 3
+                }
+            },
+            'inflation': {
+                title: 'Inflation Explained',
+                content: `
+                    <p>Inflation is the silent wealth killer. If you don't understand it, you're losing money every single day without realizing it.</p>
+
+                    <div class="highlight-box">
+                        <strong>Definition:</strong> Inflation is the rate at which the general level of prices for goods and services rises, eroding purchasing power over time.
+                    </div>
+
+                    <p>At 3% annual inflation, <strong>$100 today will only buy $74 worth of goods in 10 years.</strong> That's why "saving money under the mattress" is a losing strategy.</p>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">What Causes Inflation?</h4>
+                    <p><strong>1. Demand-Pull Inflation</strong> — Too much money chasing too few goods. When demand exceeds supply, prices rise.</p>
+                    <p><strong>2. Cost-Push Inflation</strong> — Production costs (wages, raw materials) increase, and businesses pass those costs to consumers.</p>
+                    <p><strong>3. Built-In Inflation</strong> — Workers demand higher wages to keep up with rising prices, which causes businesses to raise prices further — a spiral.</p>
+                    <p><strong>4. Monetary Expansion</strong> — Central banks print more money, increasing the money supply. More money in circulation = each unit is worth less.</p>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">Who Controls Inflation?</h4>
+                    <p>Central banks (like the Federal Reserve in the US) manage inflation by adjusting <strong>interest rates</strong>:</p>
+                    <p>⬆️ <strong>Raise rates</strong> → Borrowing becomes expensive → Spending slows → Inflation cools</p>
+                    <p>⬇️ <strong>Lower rates</strong> → Borrowing becomes cheap → Spending increases → Economy heats up</p>
+                    <p>The target is typically <strong>~2% annual inflation</strong> — enough to encourage spending, not enough to destabilize the economy.</p>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">How to Protect Yourself</h4>
+                    <p>✅ Invest in assets that outpace inflation (stocks, real estate)</p>
+                    <p>✅ Avoid holding too much cash long-term</p>
+                    <p>✅ Consider inflation-protected securities (TIPS, I-Bonds)</p>
+                    <p>✅ Build skills — your earning power is the best inflation hedge</p>
+                `,
+                quiz: {
+                    question: 'What is the typical inflation target for most central banks?',
+                    options: ['0%', '1%', '2%', '5%'],
+                    correct: 2
+                }
+            },
+            'budgeting': {
+                title: 'Budgeting 101',
+                content: `
+                    <p>A budget isn't a restriction — it's a <strong>plan for your money to work for you</strong>. Most millionaires budget. Most broke people don't.</p>
+
+                    <div class="highlight-box">
+                        <strong>The 50/30/20 Rule:</strong> The simplest, most effective budgeting framework ever created.
+                    </div>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">Breaking It Down</h4>
+                    <p><strong>50% — Needs</strong>: Rent/mortgage, utilities, groceries, transportation, insurance, minimum debt payments. If your needs exceed 50%, you're living above your means or in a high-cost area — consider cutting costs or increasing income.</p>
+                    <p><strong>30% — Wants</strong>: Dining out, entertainment, hobbies, subscriptions, travel, shopping. This is your life — enjoy it, but cap it.</p>
+                    <p><strong>20% — Savings & Debt</strong>: Emergency fund, retirement accounts (401k, IRA), extra debt payments, investments. This is the engine of your future wealth.</p>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">The Emergency Fund</h4>
+                    <p>Before investing a single dollar, build <strong>3–6 months of living expenses</strong> in a high-yield savings account. This prevents you from going into debt when life happens (job loss, medical emergency, car repair).</p>
+
+                    <h4 style="color:var(--accent); margin-top:1.5rem;">Practical Tips</h4>
+                    <p>📱 Use apps like YNAB, Mint, or a simple spreadsheet</p>
+                    <p>🔄 Automate savings — set up auto-transfers on payday</p>
+                    <p>📉 Review monthly — a budget is a living document</p>
+                    <p>🎯 Set specific goals: "Save $10,000 this year" beats "save more"</p>
+                `,
+                quiz: {
+                    question: 'In the 50/30/20 rule, what percentage goes to savings and debt repayment?',
+                    options: ['10%', '20%', '30%', '50%'],
+                    correct: 1
+                }
+            }
+        };
+
+        // === Navigation ===
+        function showHome() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('module-view').classList.remove('active');
+            document.getElementById('calculator-view').style.display = 'none';
+        }
+
+        function showCalculator() {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('module-view').classList.remove('active');
+            document.getElementById('calculator-view').style.display = 'block';
+        }
+
+        function openModule(key) {
+            const mod = modules[key];
+            if (!mod) return;
+
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('calculator-view').style.display = 'none';
+
+            const view = document.getElementById('module-view');
+            view.classList.add('active');
+
+            let html = `<h2>${mod.title}</h2>${mod.content}`;
+
+            // Add quiz
+            html += `
+                <div class="quiz-container">
+                    <h4>🧠 Test Your Knowledge</h4>
+                    <p style="color:var(--muted); margin-bottom:1
